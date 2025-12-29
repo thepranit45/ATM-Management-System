@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block title %}Register - ATM Management System{% endblock %}
+
+{% block content %}
+<div class="auth-container">
+    <div class="auth-card">
+        <h2 class="auth-title">Create Your Account</h2>
+        <form method="post" class="auth-form">
+            {% csrf_token %}
+            
+            {% if form.non_field_errors %}
+            <div class="error-text">{{ form.non_field_errors }}</div>
+            {% endif %}
+            
+            {% for field in form %}
+            <div class="form-group">
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {{ field }}
+                {% if field.help_text %}
+                <small class="form-text">{{ field.help_text }}</small>
+                {% endif %}
+                {% if field.errors %}
+                <div class="error-text">{{ field.errors.0 }}</div>
+                {% endif %}
+            </div>
+            {% endfor %}
+            
+            <button type="submit" class="btn btn-primary btn-block">Register</button>
+        </form>
+        <p class="auth-footer">
+            Already have an account? <a href="{% url 'login' %}">Login here</a>
+        </p>
+    </div>
+</div>
+{% endblock %}

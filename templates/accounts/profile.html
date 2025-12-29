@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+
+{% block title %}Profile - ATM Management System{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="profile-container">
+        <h1>User Profile</h1>
+        
+        <div class="profile-card">
+            <div class="profile-header">
+                <div class="profile-avatar">{{ user.first_name.0 }}{{ user.last_name.0 }}</div>
+                <div class="profile-info">
+                    <h2>{{ user.get_full_name }}</h2>
+                    <p>@{{ user.username }}</p>
+                </div>
+            </div>
+            
+            <div class="profile-details">
+                <div class="detail-row">
+                    <span class="detail-label">Email:</span>
+                    <span class="detail-value">{{ user.email }}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Phone:</span>
+                    <span class="detail-value">{{ user.phone_number|default:"Not provided" }}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Date of Birth:</span>
+                    <span class="detail-value">{{ user.date_of_birth|date:"F d, Y"|default:"Not provided" }}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Address:</span>
+                    <span class="detail-value">{{ user.address|default:"Not provided" }}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Member Since:</span>
+                    <span class="detail-value">{{ user.date_joined|date:"F d, Y" }}</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="accounts-section">
+            <h2>Your Accounts</h2>
+            {% if accounts %}
+            <div class="accounts-grid">
+                {% for account in accounts %}
+                <div class="account-card-profile">
+                    <div class="card-icon">💳</div>
+                    <h3>{{ account.get_account_type_display }}</h3>
+                    <p class="account-number">{{ account.account_number }}</p>
+                    <p class="account-balance">₹{{ account.balance|floatformat:2 }}</p>
+                    <span class="account-status status-{{ account.status|lower }}">{{ account.status }}</span>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <p class="no-data">No accounts found.</p>
+            <a href="{% url 'create_account' %}" class="btn btn-primary">Create Account</a>
+            {% endif %}
+        </div>
+        
+        <div class="form-actions">
+            <a href="{% url 'edit_profile' %}" class="btn btn-primary">Edit Profile</a>
+            <a href="{% url 'change_password' %}" class="btn btn-primary">Change Password</a>
+            <a href="{% url 'dashboard' %}" class="btn btn-secondary">Back to Dashboard</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

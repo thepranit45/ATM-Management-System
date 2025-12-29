@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block title %}Withdraw - ATM Management System{% endblock %}
+
+{% block content %}
+<div class="container form-container">
+    <div class="form-card">
+        <div class="transaction-header">
+            <div class="transaction-icon">💸</div>
+            <h2>Withdraw Money</h2>
+        </div>
+        <div class="account-info">
+            <p><strong>Account:</strong> {{ account.account_number }}</p>
+            <p><strong>Current Balance:</strong> ₹{{ account.balance|floatformat:2 }}</p>
+        </div>
+        <form method="post" class="transaction-form">
+            {% csrf_token %}
+            
+            {% for field in form %}
+            <div class="form-group">
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {{ field }}
+                {% if field.help_text %}
+                <small class="form-text">{{ field.help_text }}</small>
+                {% endif %}
+                {% if field.errors %}
+                <div class="error-text">{{ field.errors.0 }}</div>
+                {% endif %}
+            </div>
+            {% endfor %}
+            
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Withdraw</button>
+                <a href="{% url 'dashboard' %}" class="btn btn-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

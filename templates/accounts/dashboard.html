@@ -1,0 +1,121 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard - ATM Management System{% endblock %}
+
+{% block content %}
+<div class="container dashboard-container">
+    <div class="dashboard-header">
+        <h1>Welcome, {{ user.first_name }}!</h1>
+        {% if not active_account %}
+        <a href="{% url 'create_account' %}" class="btn btn-primary">Create Account</a>
+        {% endif %}
+    </div>
+
+    {% if active_account %}
+    <div class="account-section">
+        <div class="account-card main-card">
+            <div class="card-header">
+                <h3>Account Overview</h3>
+                {% if accounts.count > 1 %}
+                <div class="account-switcher">
+                    <select id="accountSwitch" class="form-control">
+                        {% for account in accounts %}
+                        <option value="{{ account.id }}" {% if account.id == active_account.id %}selected{% endif %}>
+                            {{ account.account_number }} ({{ account.account_type }})
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                {% endif %}
+            </div>
+            <div class="card-body">
+                <div class="balance-display">
+                    <p class="balance-label">Current Balance</p>
+                    <h2 class="balance-amount">₹{{ active_account.balance|floatformat:2 }}</h2>
+                </div>
+                <div class="account-details">
+                    <div class="detail-item">
+                        <span class="detail-label">Account Number:</span>
+                        <span class="detail-value">{{ active_account.account_number }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Account Type:</span>
+                        <span class="detail-value">{{ active_account.get_account_type_display }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Status:</span>
+                        <span class="detail-value status-{{ active_account.status|lower }}">{{ active_account.status }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="quick-actions">
+            <h3>Quick Actions</h3>
+            <div class="actions-grid">
+                <a href="{% url 'deposit' %}" class="action-card">
+                    <div class="action-icon">💰</div>
+                    <h4>Deposit</h4>
+                </a>
+                <a href="{% url 'withdraw' %}" class="action-card">
+                    <div class="action-icon">💸</div>
+                    <h4>Withdraw</h4>
+                </a>
+                <a href="{% url 'transfer' %}" class="action-card">
+                    <div class="action-icon">🔄</div>
+                    <h4>Transfer</h4>
+                </a>
+                <a href="{% url 'balance_inquiry' %}" class="action-card">
+                    <div class="action-icon">📊</div>
+                    <h4>Balance</h4>
+                </a>
+            </div>
+        </div>
+
+        <div class="transactions-section">
+            <div class="section-header">
+                <h3>Recent Transactions</h3>
+                <a href="{% url 'transaction_history' %}" class="btn btn-secondary">View All</a>
+            </div>
+            {% if recent_transactions %}
+            <div class="transactions-list">
+                {% for transaction in recent_transactions %}
+                <div class="transaction-item">
+                    <div class="transaction-icon {{ transaction.transaction_type|lower }}">
+                        {% if transaction.transaction_type == 'DEPOSIT' %}💰
+                        {% elif transaction.transaction_type == 'WITHDRAWAL' %}💸
+                        {% elif transaction.transaction_type == 'TRANSFER' %}🔄
+                        {% else %}📊{% endif %}
+                    </div>
+                    <div class="transaction-details">
+                        <h4>{{ transaction.get_transaction_type_display }}</h4>
+                        <p>{{ transaction.description|truncatewords:10 }}</p>
+                        <small>{{ transaction.created_at|date:"M d, Y H:i" }}</small>
+                    </div>
+                    <div class="transaction-amount {% if transaction.transaction_type == 'DEPOSIT' %}positive{% else %}negative{% endif %}">
+                        {% if transaction.transaction_type == 'DEPOSIT' %}+{% elif transaction.transaction_type != 'BALANCE_INQUIRY' %}-{% endif %}₹{{ transaction.amount|floatformat:2 }}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <p class="no-data">No transactions yet.</p>
+            {% endif %}
+        </div>
+    </div>
+    {% else %}
+    <div class="empty-state">
+        <div class="empty-icon">🏦</div>
+        <h2>No Account Found</h2>
+        <p>You don't have any bank accounts yet. Create one to get started!</p>
+        <a href="{% url 'create_account' %}" class="btn btn-primary">Create Account</a>
+    </div>
+    {% endif %}
+</div>
+
+<script>
+document.getElementById('accountSwitch')?.addEventListener('change', function() {
+    window.location.href = `/switch-account/${this.value}/`;
+});
+</script>
+{% endblock %}

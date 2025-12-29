@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block title %}Home - ATM Management System{% endblock %}
+
+{% block content %}
+<div class="hero-section">
+    <div class="container">
+        <div class="hero-content">
+            <h1 class="hero-title">Welcome to ATM Management System</h1>
+            <p class="hero-subtitle">Secure, Fast, and Reliable Banking Experience</p>
+            <div class="hero-buttons">
+                <a href="{% url 'login' %}" class="btn btn-primary">Login</a>
+                <a href="{% url 'register' %}" class="btn btn-secondary">Register</a>
+            </div>
+        </div>
+        
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">💰</div>
+                <h3>Easy Deposits</h3>
+                <p>Deposit money anytime with instant processing</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">💸</div>
+                <h3>Quick Withdrawals</h3>
+                <p>Withdraw funds securely with PIN protection</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🔄</div>
+                <h3>Fast Transfers</h3>
+                <p>Transfer money to any account instantly</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">📊</div>
+                <h3>Transaction History</h3>
+                <p>Track all your transactions in one place</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

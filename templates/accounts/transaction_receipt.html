@@ -1,0 +1,148 @@
+{% extends 'base.html' %}
+
+{% block title %}Transaction Receipt - ATM Management System{% endblock %}
+
+{% block content %}
+<div class="container form-container">
+    <div class="form-card">
+        <div class="receipt-header">
+            <h2>Transaction Receipt</h2>
+            <p class="receipt-id">Receipt ID: {{ transaction.transaction_id }}</p>
+        </div>
+        
+        <div class="receipt-body">
+            <div class="receipt-section">
+                <h3>Transaction Details</h3>
+                <div class="receipt-row">
+                    <span class="receipt-label">Type:</span>
+                    <span class="receipt-value">{{ transaction.get_transaction_type_display }}</span>
+                </div>
+                <div class="receipt-row">
+                    <span class="receipt-label">Amount:</span>
+                    <span class="receipt-value">₹{{ transaction.amount|floatformat:2 }}</span>
+                </div>
+                <div class="receipt-row">
+                    <span class="receipt-label">Date & Time:</span>
+                    <span class="receipt-value">{{ transaction.created_at|date:"M d, Y H:i" }}</span>
+                </div>
+                <div class="receipt-row">
+                    <span class="receipt-label">Status:</span>
+                    <span class="receipt-value badge badge-status-{{ transaction.status|lower }}">{{ transaction.status }}</span>
+                </div>
+            </div>
+            
+            <div class="receipt-section">
+                <h3>Balance Information</h3>
+                <div class="receipt-row">
+                    <span class="receipt-label">Balance Before:</span>
+                    <span class="receipt-value">₹{{ transaction.balance_before|floatformat:2 }}</span>
+                </div>
+                <div class="receipt-row">
+                    <span class="receipt-label">Balance After:</span>
+                    <span class="receipt-value">₹{{ transaction.balance_after|floatformat:2 }}</span>
+                </div>
+            </div>
+            
+            <div class="receipt-section">
+                <h3>Account Information</h3>
+                <div class="receipt-row">
+                    <span class="receipt-label">Account Number:</span>
+                    <span class="receipt-value">{{ transaction.account.account_number }}</span>
+                </div>
+                <div class="receipt-row">
+                    <span class="receipt-label">Account Type:</span>
+                    <span class="receipt-value">{{ transaction.account.get_account_type_display }}</span>
+                </div>
+                {% if transaction.recipient_account %}
+                <div class="receipt-row">
+                    <span class="receipt-label">Recipient Account:</span>
+                    <span class="receipt-value">{{ transaction.recipient_account.account_number }}</span>
+                </div>
+                {% endif %}
+            </div>
+            
+            {% if transaction.description %}
+            <div class="receipt-section">
+                <h3>Description</h3>
+                <p>{{ transaction.description }}</p>
+            </div>
+            {% endif %}
+            
+            <div class="receipt-footer">
+                <p>Thank you for using ATM Management System</p>
+                <p>{{ "now"|date:"M d, Y H:i:s" }}</p>
+            </div>
+        </div>
+        
+        <div class="form-actions">
+            <button onclick="window.print()" class="btn btn-primary">Print Receipt</button>
+            <a href="{% url 'transaction_history' %}" class="btn btn-secondary">Back to History</a>
+        </div>
+    </div>
+</div>
+
+<style>
+    .receipt-header {
+        text-align: center;
+        border-bottom: 2px solid var(--border-color);
+        padding-bottom: 1rem;
+        margin-bottom: 2rem;
+    }
+    
+    .receipt-id {
+        color: var(--text-secondary);
+        font-size: 0.9rem;
+        margin-top: 0.5rem;
+    }
+    
+    .receipt-section {
+        margin-bottom: 2rem;
+        padding: 1rem;
+        background: var(--bg-color);
+        border-radius: 8px;
+    }
+    
+    .receipt-section h3 {
+        margin-bottom: 1rem;
+        color: var(--primary-color);
+        border-bottom: 1px solid var(--border-color);
+        padding-bottom: 0.5rem;
+    }
+    
+    .receipt-row {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 0.75rem;
+        padding: 0.5rem 0;
+    }
+    
+    .receipt-label {
+        font-weight: 600;
+        color: var(--text-primary);
+    }
+    
+    .receipt-value {
+        color: var(--text-secondary);
+    }
+    
+    .receipt-footer {
+        text-align: center;
+        margin-top: 2rem;
+        padding-top: 2rem;
+        border-top: 2px solid var(--border-color);
+        color: var(--text-secondary);
+    }
+    
+    @media print {
+        .navbar, .footer, .form-actions {
+            display: none;
+        }
+        .form-container {
+            padding: 0;
+        }
+        .form-card {
+            box-shadow: none;
+        }
+    }
+</style>
+{% endblock %}
